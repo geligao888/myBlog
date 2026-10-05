@@ -992,6 +992,56 @@ h1 em {
   line-height: 2.2;
 }
 
+.article-font-controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 16px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.article-font-controls[hidden] {
+  display: none;
+}
+
+.font-size-button,
+.font-size-reset {
+  min-width: 34px;
+  min-height: 34px;
+  padding: 0 9px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color var(--transition-fast), color var(--transition-fast);
+}
+
+.font-size-button:hover:not(:disabled),
+.font-size-reset:hover {
+  border-color: var(--accent);
+  color: var(--accent-dark);
+}
+
+.font-size-button:disabled {
+  cursor: not-allowed;
+  opacity: .45;
+}
+
+.font-size-value {
+  min-width: 42px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  text-align: center;
+}
+
+.font-size-reset {
+  min-width: auto;
+  margin-left: 3px;
+  font-size: 10px;
+}
+
 .article-body h2 {
   margin: 38px 0 15px;
   font-size: 21px;
@@ -1187,6 +1237,10 @@ h1 em {
 
 /* 11. Small mobile layout */
 @media (max-width: 480px) {
+  :root {
+    --font-size-article: 14px;
+  }
+
   .shell {
     width: calc(100% - var(--page-gutter-mobile));
   }
@@ -1359,7 +1413,7 @@ h1 em {
   }
 
   .article-body {
-    font-size: 14px;
+    font-size: var(--font-size-article);
   }
 
   .not-found {

@@ -22,7 +22,57 @@ const date = new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: 'long', 
       <p class="article-description">{post.data.description}</p>
       <div class="article-meta"><time datetime={post.data.pubDate.toISOString().slice(0, 10)}>{date}</time><span aria-hidden="true">·</span><span>{post.data.tags.map((tag) => `#${tag}`).join('　')}</span></div>
     </header>
+    <div class="article-font-controls" aria-label="正文显示设置" hidden>
+      <span>正文</span>
+      <button class="font-size-button" type="button" data-font-size="decrease" aria-label="缩小正文字号" title="缩小正文字号">A−</button>
+      <output class="font-size-value" aria-live="polite"></output>
+      <button class="font-size-button" type="button" data-font-size="increase" aria-label="放大正文字号" title="放大正文字号">A＋</button>
+      <button class="font-size-reset" type="button" data-font-size="reset">重置</button>
+    </div>
     <div class="article-body"><Content /></div>
     <footer class="article-end"><span aria-hidden="true">✳</span><p>谢谢你读到这里。<br />愿今天也有值得记下的一页。</p><a class="text-link" href={`${base}archive/`}>继续阅读 <span aria-hidden="true">→</span></a></footer>
   </article>
 </SiteLayout>
+
+<script>
+  const controls = document.querySelector('.article-font-controls');
+  const valueOutput = controls?.querySelector('.font-size-value');
+  const sizeButtons = controls?.querySelectorAll('[data-font-size]');
+  const preferenceKey = 'journal-article-font-size';
+  const minSize = 14;
+  const maxSize = 28;
+  const step = 2;
+
+  if (controls && valueOutput && sizeButtons) {
+    const root = document.documentElement;
+    const storedSize = Number(localStorage.getItem(preferenceKey));
+    let fontSize = Number.isFinite(storedSize) && storedSize >= minSize && storedSize <= maxSize
+      ? storedSize
+      : Number.parseFloat(getComputedStyle(root).getPropertyValue('--font-size-article'));
+
+    const renderSize = () => {
+      root.style.setProperty('--font-size-article', `${fontSize}px`);
+      valueOutput.textContent = `${fontSize}px`;
+      controls.querySelector('[data-font-size="decrease"]').disabled = fontSize <= minSize;
+      controls.querySelector('[data-font-size="increase"]').disabled = fontSize >= maxSize;
+    };
+
+    sizeButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        if (button.dataset.fontSize === 'reset') {
+          localStorage.removeItem(preferenceKey);
+          root.style.removeProperty('--font-size-article');
+          fontSize = Number.parseFloat(getComputedStyle(root).getPropertyValue('--font-size-article'));
+        } else {
+          const direction = button.dataset.fontSize === 'increase' ? 1 : -1;
+          fontSize = Math.min(maxSize, Math.max(minSize, fontSize + direction * step));
+          localStorage.setItem(preferenceKey, String(fontSize));
+        }
+        renderSize();
+      });
+    });
+
+    renderSize();
+    controls.hidden = false;
+  }
+</script>
