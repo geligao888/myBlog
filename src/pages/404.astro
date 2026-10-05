@@ -1,0 +1,13 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+const base = import.meta.env.BASE_URL;
+---
+
+<SiteLayout title="没有找到这一页 · 拾页" description="这个页面暂时没有找到。">
+  <section class="shell not-found">
+    <span class="not-found-mark" aria-hidden="true">404</span>
+    <p class="eyebrow">PAGE NOT FOUND</p>
+    <h1>这页好像<br /><em>还没被写下。</em></h1>
+    <a class="button button-primary" href={base}>回到首页 <span aria-hidden="true">↗</span></a>
+  </section>
+</SiteLayout>

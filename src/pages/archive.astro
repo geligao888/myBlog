@@ -1,0 +1,53 @@
+---
+import { getCollection } from 'astro:content';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import PostCard from '../components/PostCard.astro';
+
+const posts = (await getCollection('journal')).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<SiteLayout title="文章归档 · 拾页" description="学习笔记与生活片段的完整归档。" activePage="archive">
+  <section class="shell page-intro archive-intro">
+    <p class="eyebrow"><span class="eyebrow-dot"></span> THE JOURNAL</p>
+    <h1>每一页，都是<br /><em>走过的痕迹。</em></h1>
+    <p>学习的进度、生活的碎片，还有暂时说不清楚但想留下来的念头。</p>
+  </section>
+  <section class="shell archive-section">
+    <div class="archive-toolbar">
+      <p><span class="post-count">{posts.length.toString().padStart(2, '0')}</span> 篇记录</p>
+      <div class="filter-group" role="group" aria-label="按文章分类筛选">
+        <button class="filter-button is-selected" type="button" data-filter="全部" aria-pressed="true">全部</button>
+        <button class="filter-button" type="button" data-filter="学习" aria-pressed="false">学习</button>
+        <button class="filter-button" type="button" data-filter="生活" aria-pressed="false">生活</button>
+      </div>
+    </div>
+    <div class="post-grid archive-grid" id="post-list">
+      {posts.map((post) => <div class="filterable-post" data-category={post.data.category}><PostCard post={post} /></div>)}
+    </div>
+    <p class="empty-state" hidden>这个分类还没有文章，之后再来看看吧。</p>
+    <noscript><p class="no-script-note">分类筛选需要启用 JavaScript；所有文章仍会正常显示。</p></noscript>
+  </section>
+  <script>
+    const buttons = [...document.querySelectorAll('[data-filter]')];
+    const cards = [...document.querySelectorAll('.filterable-post')];
+    const emptyState = document.querySelector('.empty-state');
+
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const filter = button.dataset.filter;
+        let visibleCount = 0;
+        buttons.forEach((item) => {
+          const selected = item === button;
+          item.classList.toggle('is-selected', selected);
+          item.setAttribute('aria-pressed', String(selected));
+        });
+        cards.forEach((card) => {
+          const visible = filter === '全部' || card.dataset.category === filter;
+          card.hidden = !visible;
+          if (visible) visibleCount += 1;
+        });
+        if (emptyState) emptyState.hidden = visibleCount > 0;
+      });
+    });
+  </script>
+</SiteLayout>

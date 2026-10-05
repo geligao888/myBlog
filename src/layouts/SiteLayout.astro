@@ -1,0 +1,71 @@
+---
+import '../styles/global.css';
+
+const {
+  title = '拾页 · 学习与生活手记',
+  description = '记录正在学习的事，也记录认真生活的日常。',
+  activePage = '',
+} = Astro.props;
+const base = import.meta.env.BASE_URL;
+const navItems = [
+  { href: base, label: '首页', key: 'home' },
+  { href: `${base}archive/`, label: '文章', key: 'archive' },
+  { href: `${base}about/`, label: '关于', key: 'about' },
+];
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f8f5ef" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">跳到正文</a>
+    <header class="site-header">
+      <div class="shell header-inner">
+        <a class="brand" href={base} aria-label="拾页，回到首页">
+          <span class="brand-mark" aria-hidden="true">拾</span>
+          <span class="brand-copy"><strong>拾页</strong><small>NOTES IN PROGRESS</small></span>
+        </a>
+        <nav class="main-nav" aria-label="主导航">
+          {navItems.map((item) => (
+            <a href={item.href} class:list={[{ active: activePage === item.key }]} aria-current={activePage === item.key ? 'page' : undefined}>{item.label}</a>
+          ))}
+        </nav>
+        <button class="theme-toggle" type="button" aria-label="切换深色模式" title="切换深色模式">
+          <span class="theme-icon" aria-hidden="true">☾</span>
+        </button>
+      </div>
+    </header>
+    <main id="main">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div class="shell footer-inner">
+        <p>慢慢写，慢慢长大。 <span aria-hidden="true">✳</span></p>
+        <p class="footer-meta">用好奇心记录生活 · <span>© {new Date().getFullYear()} 拾页</span></p>
+      </div>
+    </footer>
+    <script>
+      const toggle = document.querySelector('.theme-toggle');
+      const icon = document.querySelector('.theme-icon');
+      const storedTheme = localStorage.getItem('journal-theme');
+      if (storedTheme === 'dark') document.documentElement.dataset.theme = 'dark';
+      if (icon) icon.textContent = document.documentElement.dataset.theme === 'dark' ? '☀' : '☾';
+
+      toggle?.addEventListener('click', () => {
+        const isDark = document.documentElement.dataset.theme !== 'dark';
+        document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+        localStorage.setItem('journal-theme', isDark ? 'dark' : 'light');
+        if (icon) icon.textContent = isDark ? '☀' : '☾';
+      });
+    </script>
+  </body>
+</html>

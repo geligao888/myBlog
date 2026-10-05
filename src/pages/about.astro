@@ -1,0 +1,28 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+const base = import.meta.env.BASE_URL;
+---
+
+<SiteLayout title="关于 · 拾页" description="关于这个个人博客，以及为什么开始记录。" activePage="about">
+  <section class="shell page-intro about-intro">
+    <p class="eyebrow"><span class="eyebrow-dot"></span> A LITTLE ABOUT ME</p>
+    <h1>你好，<br /><em>很高兴遇见你。</em></h1>
+    <p>这里是我的个人手账，也是一个持续练习表达、学习和生活的地方。</p>
+  </section>
+  <section class="shell about-content">
+    <div class="about-portrait" aria-hidden="true"><span>拾</span><i>✳</i></div>
+    <div class="about-copy">
+      <p class="section-index">这间小屋的主人</p>
+      <h2>关于我，<br />还在慢慢写。</h2>
+      <p>我是一个喜欢保持好奇的人。最近正在学习 JavaScript 和网站开发，也在练习把复杂的问题拆成更容易理解的小步骤。</p>
+      <p>我相信，记录能让学习变得具体，也能让普通日子留下温柔的注脚。这个网站是我一边学习、一边搭建的作品；代码、文字和设计都会随着时间继续生长。</p>
+      <div class="about-details">
+        <div><span>最近在学</span><strong>JavaScript · Web</strong></div>
+        <div><span>喜欢收集</span><strong>好问题 · 小日常</strong></div>
+        <div><span>写作语言</span><strong>中文</strong></div>
+      </div>
+      <a class="text-link" href={`${base}archive/`}>从最近的文章开始认识我 <span aria-hidden="true">→</span></a>
+    </div>
+  </section>
+  <section class="shell about-signoff"><span aria-hidden="true">✳</span><p>愿我们都能在自己的节奏里，<br />成为更喜欢的自己。</p></section>
+</SiteLayout>
